@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gran Rifa Solidaria, Séptimos básicos viaje a Pellines 2026</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Un gris claro para el fondo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 700px; /* Un poco más ancho para el nuevo contenido */
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* Bordes más redondeados */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+        }
+        .draw-button {
+            background-image: linear-gradient(to right, #6EE7B7 0%, #34D399 51%, #10B981 100%);
+            margin: 20px 0;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+            width: fit-content;
+            cursor: pointer;
+            border: none;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-left: auto; /* Centrar el botón */
+            margin-right: auto; /* Centrar el botón */
+        }
+        .draw-button:hover:not(:disabled) { /* Solo aplica hover si no está deshabilitado */
+            background-position: right center; /* Cambia la posición del gradiente al pasar el ratón */
+            color: #fff;
+            text-decoration: none;
+        }
+        .draw-button:disabled {
+            opacity: 0.6; /* Hace el botón más opaco cuando está deshabilitado */
+            cursor: not-allowed; /* Cambia el cursor para indicar que no es clicable */
+        }
+        .number-display {
+            font-size: 3rem; /* Tamaño de fuente grande */
+            font-weight: 700; /* Negrita */
+            color: #10B981; /* Color verde vibrante */
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #ecfdf5; /* Fondo muy claro para los números */
+            border-radius: 0.75rem; /* Bordes redondeados */
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06); /* Sombra interna sutil */
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151; /* Gris oscuro */
+            margin-bottom: 10px;
+        }
+        .info-text {
+            color: #6B7280; /* Gris medio */
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .card-info-section {
+            background-color: #f8fafc; /* Un gris aún más claro para las secciones de info */
+            border-radius: 1rem;
+            padding: 25px;
+            margin-top: 25px;
+            text-align: left; /* Alineación de texto a la izquierda para el contenido */
+            border: 1px solid #e2e8f0;
+        }
+        .card-info-section h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .card-info-section p, .card-info-section ul, .card-info-section li {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        .card-info-section ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            padding-left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-6">Gran Rifa Solidaria, Séptimos básicos viaje a Pellines 2026</h1>
+
+        <p class="info-text">
+            Haz clic en el botón para generar aleatoriamente el cartón ganador y un número dentro de ese cartón.
+            ¡Mucha suerte!
+        </p>
+
+        <!-- Sección de Motivo de la Rifa (Actualizada) -->
+        <div class="card-info-section">
+            <h3>Motivo de la Rifa</h3>
+            <p>
+                Esta es una <strong>GRAN RIFA SOLIDARIA</strong> con un valor de $1.000 por cartón, organizada
+                en beneficio de los Séptimos Básicos 2025 del Colegio St. Thomas Morus,
+                para juntar fondos para su viaje a Pellines en 2026.
+            </p>
+            <p class="mt-4">
+                ¡Gracias por tu apoyo y por ser parte de este noble objetivo!
+            </p>
+        </div>
+
+        <!-- Sección de Premios Sorteados (Actualizada) -->
+        <div class="card-info-section">
+            <h3>Premios Sorteados</h3>
+            <ul class="mt-4">
+                <li><strong>1ER PREMIO:</strong> $200.000</li>
+                <li><strong>2DO PREMIO:</strong> $100.000</li>
+                <li><strong>3ER Y 4TO PREMIO:</strong> $50.000 C/U</li>
+            </ul>
+            <p class="mt-4">
+                Los dineros serán transferidos a la cuenta que el ganador indique.
+            </p>
+        </div>
+
+        <!-- Controles y resultados del sorteo -->
+        <button id="drawButton" class="draw-button">
+            Realizar Sorteo
+        </button>
+
+        <!-- Sección de resultados del sorteo -->
+        <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
+            <h2 class="section-title">Cartón Ganador</h2>
+            <div id="winningCarton" class="number-display">--</div>
+            <p class="text-gray-500 mt-2">El número de cartón sorteado (entre 1 y 300).</p>
+        </div>
+
+        <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
+            <h2 class="section-title">Número Ganador dentro del Cartón</h2>
+            <div id="winningNumberInCarton" class="number-display">--</div>
+            <p class="text-gray-500 mt-2">El número específico dentro del cartón ganador (del 1 al 10).</p>
+        </div>
+
+        <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
+            <h2 class="section-title">Boleto Ganador</h2>
+            <div id="globalWinningTicket" class="number-display">--</div>
+            <p class="text-gray-500 mt-2" id="globalTicketInfo">Este es el identificador único del boleto ganador.</p>
+        </div>
+
+        <!-- Mensaje de confirmación -->
+        <div id="messageBox" class="hidden mt-6 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">¡Sorteo realizado!</strong>
+            <span class="block sm:inline" id="messageText"></span>
+            <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" onclick="document.getElementById('messageBox').classList.add('hidden');">
+                <svg class="fill-current h-6 w-6 text-blue-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Cerrar</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+            </span>
+        </div>
+
+    </div>
+
+    <script>
+        // Obtener referencias a los elementos HTML
+        const drawButton = document.getElementById('drawButton');
+        const winningCartonDisplay = document.getElementById('winningCarton');
+        const winningNumberInCartonDisplay = document.getElementById('winningNumberInCarton');
+        const globalWinningTicketDisplay = document.getElementById('globalWinningTicket');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+
+        /**
+         * Genera un número entero aleatorio entre un mínimo y un máximo (ambos inclusive).
+         * @param {number} min - El valor mínimo permitido.
+         * @param {number} max - El valor máximo permitido.
+         * @returns {number} Un número entero aleatorio.
+         */
+        function getRandomInt(min, max) {
+            min = Math.ceil(min); // Asegura que el mínimo sea un entero
+            max = Math.floor(max); // Asegura que el máximo sea un entero
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        /**
+         * Animates the display of numbers for a given element, then displays the final value.
+         * @param {HTMLElement} displayElement - The HTML element to update with animated numbers.
+         * @param {number} min - Minimum random number for animation.
+         * @param {number} max - Maximum random number for animation.
+         * @param {number} durationMs - Duration of the animation in milliseconds.
+         * @param {*} finalValue - The actual winning value to display at the end. Can be a string or number.
+         * @param {Function} callback - Function to call after the animation completes.
+         * @returns {void}
+         */
+        function animateDraw(displayElement, min, max, durationMs, finalValue, callback) {
+            let startTime = Date.now();
+            // Start interval to update numbers rapidly
+            let intervalId = setInterval(() => {
+                if (Date.now() - startTime < durationMs) {
+                    displayElement.textContent = getRandomInt(min, max);
+                } else {
+                    // Animation complete, clear interval and set final value
+                    clearInterval(intervalId);
+                    displayElement.textContent = finalValue;
+                    if (callback) {
+                        callback(); // Execute callback function
+                    }
+                }
+            }, 100); // Update every 100 milliseconds for a smooth "spinning" effect
+        }
+
+        /**
+         * Realiza el sorteo de los números de cartón y los muestra en la interfaz con animación.
+         * Deshabilita el botón durante el sorteo.
+         * @returns {void}
+         */
+        function performDraw() {
+            // Deshabilitar el botón para evitar múltiples sorteos simultáneos
+            drawButton.disabled = true;
+
+            // Resetear las visualizaciones y ocultar el mensaje de confirmación
+            winningCartonDisplay.textContent = '--';
+            winningNumberInCartonDisplay.textContent = '--';
+            globalWinningTicketDisplay.textContent = '--';
+            messageBox.classList.add('hidden');
+
+            const finalWinningCarton = getRandomInt(1, 300);
+
+            // 1. Iniciar la animación para el "Cartón Ganador"
+            animateDraw(winningCartonDisplay, 1, 300, 10000, finalWinningCarton, () => {
+                // Callback que se ejecuta una vez que la animación del cartón termina
+
+                const finalWinningNumberInCarton = getRandomInt(1, 10);
+
+                // 2. Iniciar la animación para el "Número Ganador dentro del Cartón"
+                animateDraw(winningNumberInCartonDisplay, 1, 10, 10000, finalWinningNumberInCarton, () => {
+                    // Callback que se ejecuta una vez que la animación del número dentro del cartón termina
+
+                    // Mostrar el boleto ganador en el formato "Cartón X - Número Y"
+                    globalWinningTicketDisplay.textContent = `${finalWinningCarton} - ${finalWinningNumberInCarton}`;
+
+                    // Actualizar el texto informativo debajo del boleto ganador
+                    document.getElementById('globalTicketInfo').textContent = `Este boleto corresponde al Cartón ${finalWinningCarton} - Número ${finalWinningNumberInCarton}.`;
+
+                    // Mostrar mensaje de confirmación con los detalles del cartón y número interno
+                    messageText.textContent = ` El cartón sorteado es el ${finalWinningCarton}, con el número interno ${finalWinningNumberInCarton}.`;
+                    messageBox.classList.remove('hidden'); // Mostrar el cuadro de mensaje
+
+                    // Habilitar el botón de nuevo una vez que todas las animaciones han terminado
+                    drawButton.disabled = false;
+                });
+            });
+        }
+
+        // Asignar el evento click al botón de sorteo
+        drawButton.addEventListener('click', performDraw);
+
+        // Realizar un sorteo inicial al cargar la página para que no aparezca en "--"
+        // Esto también iniciará la secuencia de animaciones al cargar la página.
+        window.onload = performDraw;
+    </script>
+</body>
+</html>
