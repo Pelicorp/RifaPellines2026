@@ -27,9 +27,9 @@
             padding: 30px;
             text-align: center;
         }
-        .draw-button {
+        .draw-button, .clear-button {
             background-image: linear-gradient(to right, #6EE7B7 0%, #34D399 51%, #10B981 100%);
-            margin: 20px 0;
+            margin: 10px; /* Ajustado para que quepan dos botones */
             padding: 15px 45px;
             text-align: center;
             text-transform: uppercase;
@@ -38,51 +38,49 @@
             color: white;
             box-shadow: 0 0 20px #eee;
             border-radius: 10px;
-            display: block;
+            display: inline-block; /* Cambiado a inline-block para que estén en la misma línea */
             width: fit-content;
             cursor: pointer;
             border: none;
             font-weight: 700;
             letter-spacing: 1px;
-            margin-left: auto; /* Centrar el botón */
-            margin-right: auto; /* Centrar el botón */
         }
-        .draw-button:hover:not(:disabled) { /* Solo aplica hover si no está deshabilitado */
-            background-position: right center; /* Cambia la posición del gradiente al pasar el ratón */
+        .draw-button:hover:not(:disabled), .clear-button:hover:not(:disabled) {
+            background-position: right center;
             color: #fff;
             text-decoration: none;
         }
-        .draw-button:disabled {
-            opacity: 0.6; /* Hace el botón más opaco cuando está deshabilitado */
-            cursor: not-allowed; /* Cambia el cursor para indicar que no es clicable */
+        .draw-button:disabled, .clear-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
         .number-display {
-            font-size: 3rem; /* Tamaño de fuente grande */
-            font-weight: 700; /* Negrita */
-            color: #10B981; /* Color verde vibrante */
+            font-size: 3rem;
+            font-weight: 700;
+            color: #10B981;
             margin-top: 10px;
             padding: 15px;
-            background-color: #ecfdf5; /* Fondo muy claro para los números */
-            border-radius: 0.75rem; /* Bordes redondeados */
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06); /* Sombra interna sutil */
+            background-color: #ecfdf5;
+            border-radius: 0.75rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
         }
         .section-title {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #374151; /* Gris oscuro */
+            color: #374151;
             margin-bottom: 10px;
         }
         .info-text {
-            color: #6B7280; /* Gris medio */
+            color: #6B7280;
             font-size: 0.9rem;
             margin-bottom: 20px;
         }
         .card-info-section {
-            background-color: #f8fafc; /* Un gris aún más claro para las secciones de info */
+            background-color: #f8fafc;
             border-radius: 1rem;
             padding: 25px;
             margin-top: 25px;
-            text-align: left; /* Alineación de texto a la izquierda para el contenido */
+            text-align: left;
             border: 1px solid #e2e8f0;
         }
         .card-info-section h3 {
@@ -100,6 +98,11 @@
             list-style-type: disc;
             margin-left: 20px;
             padding-left: 0;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -139,9 +142,14 @@
         </div>
 
         <!-- Controles y resultados del sorteo -->
-        <button id="drawButton" class="draw-button">
-            Realizar Sorteo
-        </button>
+        <div class="button-group">
+            <button id="drawButton" class="draw-button">
+                Realizar Sorteo
+            </button>
+            <button id="clearButton" class="clear-button">
+                Limpiar Resultados
+            </button>
+        </div>
 
         <!-- Sección de resultados del sorteo -->
         <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
@@ -176,11 +184,16 @@
     <script>
         // Obtener referencias a los elementos HTML
         const drawButton = document.getElementById('drawButton');
+        const clearButton = document.getElementById('clearButton'); // Nuevo botón de limpiar
         const winningCartonDisplay = document.getElementById('winningCarton');
         const winningNumberInCartonDisplay = document.getElementById('winningNumberInCarton');
         const globalWinningTicketDisplay = document.getElementById('globalWinningTicket');
+        const globalTicketInfo = document.getElementById('globalTicketInfo'); // Referencia al párrafo de info
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
+
+        // Estado inicial del párrafo de información del boleto ganador
+        const initialGlobalTicketInfoText = "Este es el identificador único del boleto ganador.";
 
         /**
          * Genera un número entero aleatorio entre un mínimo y un máximo (ambos inclusive).
@@ -222,18 +235,33 @@
         }
 
         /**
+         * Resets all the displayed results to their initial state.
+         */
+        function clearResults() {
+            winningCartonDisplay.textContent = '--';
+            winningNumberInCartonDisplay.textContent = '--';
+            globalWinningTicketDisplay.textContent = '--';
+            globalTicketInfo.textContent = initialGlobalTicketInfoText; // Restablecer el texto de info
+            messageBox.classList.add('hidden'); // Ocultar el cuadro de mensaje
+            drawButton.disabled = false; // Asegurarse de que el botón de sorteo esté habilitado
+        }
+
+        /**
          * Realiza el sorteo de los números de cartón y los muestra en la interfaz con animación.
          * Deshabilita el botón durante el sorteo.
          * @returns {void}
          */
         function performDraw() {
-            // Deshabilitar el botón para evitar múltiples sorteos simultáneos
+            // Deshabilitar el botón de sorteo y de limpiar para evitar múltiples acciones simultáneas
             drawButton.disabled = true;
+            clearButton.disabled = true;
+
 
             // Resetear las visualizaciones y ocultar el mensaje de confirmación
             winningCartonDisplay.textContent = '--';
             winningNumberInCartonDisplay.textContent = '--';
             globalWinningTicketDisplay.textContent = '--';
+            globalTicketInfo.textContent = initialGlobalTicketInfoText; // Restablecer el texto de info antes de la animación
             messageBox.classList.add('hidden');
 
             const finalWinningCarton = getRandomInt(1, 300);
@@ -258,8 +286,9 @@
                     messageText.textContent = ` El cartón sorteado es el ${finalWinningCarton}, con el número interno ${finalWinningNumberInCarton}.`;
                     messageBox.classList.remove('hidden'); // Mostrar el cuadro de mensaje
 
-                    // Habilitar el botón de nuevo una vez que todas las animaciones han terminado
+                    // Habilitar los botones una vez que todas las animaciones han terminado
                     drawButton.disabled = false;
+                    clearButton.disabled = false;
                 });
             });
         }
@@ -267,9 +296,11 @@
         // Asignar el evento click al botón de sorteo
         drawButton.addEventListener('click', performDraw);
 
-        // Realizar un sorteo inicial al cargar la página para que no aparezca en "--"
-        // Esto también iniciará la secuencia de animaciones al cargar la página.
-        window.onload = performDraw;
+        // Asignar el evento click al botón de limpiar resultados
+        clearButton.addEventListener('click', clearResults);
+
+        // Ya no se llama performDraw en window.onload,
+        // los resultados se mostrarán como "--" por defecto hasta que se presione el botón.
     </script>
 </body>
 </html>
