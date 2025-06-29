@@ -186,9 +186,8 @@
             </p>
             <ul class="mt-4">
                 <li><strong>Cartones Válidos:</strong> Los cartones sorteados estarán en el rango de 1 a 225.</li>
-                <li><strong>Cartones Excluidos:</strong> Los cartones <strong>127</strong> y <strong>128</strong> no fueron vendidos y, por lo tanto, no pueden ser ganadores. Si alguno de estos números es sorteado, el sistema automáticamente realizará un nuevo sorteo interno hasta obtener un cartón válido.</li>
-                <li><strong>Sorteos "Al Agua":</strong> Antes de cada premio oficial, se realizarán aleatoriamente entre 1 y 3 sorteos "al agua". Estos sorteos intermedios no otorgan premio y están diseñados para añadir emoción al evento. La aplicación indicará si un sorteo se ha ido "al agua" y cuántos intentos adicionales quedan para el premio actual.</li>
-                <li><strong>Determinación del Ganador:</strong> Una vez que los sorteos "al agua" asignados para un premio se han completado, el siguiente sorteo realizado será el ganador oficial de ese premio.</li>
+                <li><strong>Cartones Excluidos:</strong> Los cartones <strong>127, 128, 202, 203</strong> y <strong>206</strong> no fueron vendidos y, por lo tanto, no pueden ser ganadores. Si alguno de estos números es sorteado, el sistema automáticamente realizará un nuevo sorteo interno hasta obtener un cartón válido.</li>
+                <li><strong>Determinación del Ganador:</strong> Cada sorteo realizado corresponderá directamente al premio en curso, sin sorteos intermedios "al agua".</li>
             </ul>
             <p class="mt-4">
                 ¡La honestidad y la emoción son nuestra prioridad!
@@ -209,7 +208,7 @@
         <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
             <h2 class="section-title">Cartón Sorteado</h2>
             <div id="winningCarton" class="number-display">--</div>
-            <p class="text-gray-500 mt-2">El número de cartón sorteado (entre 1 y 225, excluyendo 127 y 128).</p>
+            <p class="text-gray-500 mt-2">El número de cartón sorteado (entre 1 y 225, excluyendo 127, 128, 202, 203 y 206).</p>
         </div>
 
         <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
@@ -250,23 +249,8 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Sección de Tabla de "Al Agua" -->
-        <div id="alAguaTableSection" class="results-table-section">
-            <h3>Historial de Sorteos "Al Agua"</h3>
-            <table class="results-table">
-                <thead>
-                    <tr>
-                        <th>Premio Intento</th>
-                        <th>Cartón</th>
-                        <th>Número Interno</th>
-                    </tr>
-                </thead>
-                <tbody id="alAguaTableBody">
-                    <!-- Los resultados "al agua" se insertarán aquí por JavaScript -->
-                </tbody>
-            </table>
-        </div>
+        
+        <!-- Eliminada la sección de "Historial de Sorteos 'Al Agua'" -->
 
     </div>
 
@@ -281,13 +265,12 @@
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
         const resultsTableBody = document.getElementById('resultsTableBody'); // Table for winners
-        const alAguaTableBody = document.getElementById('alAguaTableBody'); // Table for "al agua" draws
 
         // Initial state of the global ticket info paragraph
         const initialGlobalTicketInfoText = "Este es el identificador único del boleto resultante.";
 
-        // Define excluded carton numbers
-        const excludedCartons = [127, 128];
+        // Define excluded carton numbers (updated list)
+        const excludedCartons = [127, 128, 202, 203, 206];
 
         // Definition of prizes in reverse draw order
         const prizes = [
@@ -299,8 +282,6 @@
 
         let currentDrawIndex = 0; // Index to track which prize is being drawn
         let recordedResults = []; // Array to store winning draw results
-        let recordedAlAguaResults = []; // Array to store "al agua" draw results
-        let alAguaDrawsRemaining = 0; // Counter for "al agua" draws remaining for the current prize
 
         /**
          * Generates a random integer between a minimum and maximum (inclusive).
@@ -376,20 +357,6 @@
         }
 
         /**
-         * Renders the stored "al agua" results in their HTML table.
-         * @returns {void}
-         */
-        function renderAlAguaResultsTable() {
-            alAguaTableBody.innerHTML = ''; // Clear the table before rendering
-            recordedAlAguaResults.forEach(result => {
-                const row = alAguaTableBody.insertRow();
-                row.insertCell().textContent = result.prizeAttempt;
-                row.insertCell().textContent = result.carton;
-                row.insertCell().textContent = result.internalNumber;
-            });
-        }
-
-        /**
          * Resets all the displayed results, the history tables, and draw state.
          */
         function clearResults() {
@@ -401,12 +368,7 @@
 
             currentDrawIndex = 0; // Reset draw counter
             recordedResults = []; // Clear winning results array
-            recordedAlAguaResults = []; // Clear "al agua" results array
             renderResultsTable(); // Update winners table (will be empty)
-            renderAlAguaResultsTable(); // Update "al agua" table (will be empty)
-
-            // Initialize "al agua" draws remaining for the first prize (random between 1 and 3)
-            alAguaDrawsRemaining = getRandomInt(1, 3);
 
             drawButton.disabled = false; // Enable draw button
             drawButton.textContent = `Realizar Sorteo para el ${prizes[0].name}`; // Update button text for the first prize
@@ -439,12 +401,10 @@
             messageBox.classList.add('hidden');
 
             const currentPrize = prizes[currentDrawIndex];
-            // Get a valid random carton, excluding 127 and 128
+            // Get a valid random carton, excluding specified numbers
             const finalWinningCarton = getValidRandomCarton(1, 225, excludedCartons);
 
             // 1. Start animation for "Cartón Sorteado"
-            // The animation will show random numbers within the range,
-            // but the final value will be a valid carton number.
             animateDraw(winningCartonDisplay, 1, 225, 10000, finalWinningCarton, () => {
                 // Callback once carton animation ends
                 const finalWinningNumberInCarton = getRandomInt(1, 10);
@@ -459,57 +419,28 @@
                     // Update the informational text below the result ticket
                     globalTicketInfo.textContent = `Este boleto corresponde al Cartón ${finalWinningCarton} - Número ${finalWinningNumberInCarton}.`;
 
-                    // "Al Agua" logic
-                    if (alAguaDrawsRemaining > 0) {
-                        alAguaDrawsRemaining--; // Decrement "al agua" counter
-                        
-                        // Record "al agua" draw
-                        const alAguaAttemptNumber = (getRandomInt(1, 3) - alAguaDrawsRemaining);
-                        recordedAlAguaResults.push({
-                            prizeAttempt: `${currentPrize.name} (Intento ${alAguaAttemptNumber})`,
-                            carton: finalWinningCarton,
-                            internalNumber: finalWinningNumberInCarton,
-                        });
-                        renderAlAguaResultsTable(); // Update "al agua" table
+                    // This is the WINNING draw for the current prize (no "al agua" logic)
+                    recordedResults.push({
+                        prize: currentPrize.name,
+                        carton: finalWinningCarton,
+                        internalNumber: finalWinningNumberInCarton,
+                    });
+                    renderResultsTable(); // Update winners table with the new result
 
-                        messageText.textContent = ` Lamentablemente te fuiste Al Agua, mejor suerte para la próxima. Queda${alAguaDrawsRemaining === 1 ? ' ' : 'n '}${alAguaDrawsRemaining} sorteo${alAguaDrawsRemaining === 1 ? '' : 's'} "al agua" para el ${currentPrize.name}.`;
-                        if (alAguaDrawsRemaining === 0) {
-                             messageText.textContent = ` ¡Este es el último intento antes del ${currentPrize.name} oficial!`;
-                        }
-                        messageBox.classList.remove('hidden');
-                        
-                        // Enable button to draw again for the SAME prize
-                        drawButton.disabled = false;
-                        clearButton.disabled = false;
+                    // Display winner confirmation message
+                    messageText.textContent = ` ¡${currentPrize.name} ha sido sorteado! El cartón ganador es el ${finalWinningCarton}, con el número interno ${finalWinningNumberInCarton}.`;
+                    messageBox.classList.remove('hidden');
 
+                    currentDrawIndex++; // Move to the next prize
+                    if (currentDrawIndex < prizes.length) {
+                        drawButton.textContent = `Realizar Sorteo para el ${prizes[currentDrawIndex].name}`;
+                        drawButton.disabled = false; // Enable for the next draw
                     } else {
-                        // This is the WINNING draw for the current prize
-
-                        // Record the WINNING draw result
-                        recordedResults.push({
-                            prize: currentPrize.name,
-                            carton: finalWinningCarton,
-                            internalNumber: finalWinningNumberInCarton,
-                        });
-                        renderResultsTable(); // Update winners table with the new result
-
-                        // Display winner confirmation message
-                        messageText.textContent = ` ¡${currentPrize.name} ha sido sorteado! El cartón ganador es el ${finalWinningCarton}, con el número interno ${finalWinningNumberInCarton}.`;
-                        messageBox.classList.remove('hidden');
-
-                        currentDrawIndex++; // Move to the next prize
-                        if (currentDrawIndex < prizes.length) {
-                            // If there are more prizes, initialize "al agua" counter for the next prize (random between 1 and 3)
-                            alAguaDrawsRemaining = getRandomInt(1, 3);
-                            drawButton.textContent = `Realizar Sorteo para el ${prizes[currentDrawIndex].name}`;
-                            drawButton.disabled = false; // Enable for the next draw
-                        } else {
-                            // All prizes have been drawn
-                            drawButton.textContent = 'Todos los Sorteos Completados';
-                            drawButton.disabled = true;
-                        }
-                        clearButton.disabled = false; // Enable clear button
+                        // All prizes have been drawn
+                        drawButton.textContent = 'Todos los Sorteos Completados';
+                        drawButton.disabled = true;
                     }
+                    clearButton.disabled = false; // Enable clear button
                 });
             });
         }
