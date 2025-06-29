@@ -104,6 +104,43 @@
             justify-content: center;
             margin-top: 20px;
         }
+        .results-table-section {
+            margin-top: 40px;
+            background-color: #f8fafc;
+            border-radius: 1rem;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+        }
+        .results-table-section h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .results-table th, .results-table td {
+            border: 1px solid #e2e8f0;
+            padding: 12px 15px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .results-table th {
+            background-color: #e2e8f0;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+        }
+        .results-table tbody tr:nth-child(odd) {
+            background-color: #fcfdfe;
+        }
+        .results-table tbody tr:hover {
+            background-color: #f0f4f8;
+        }
     </style>
 </head>
 <body>
@@ -153,21 +190,21 @@
 
         <!-- Sección de resultados del sorteo -->
         <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
-            <h2 class="section-title">Cartón Ganador</h2>
+            <h2 class="section-title">Cartón Sorteado</h2>
             <div id="winningCarton" class="number-display">--</div>
-            <p class="text-gray-500 mt-2">El número de cartón sorteado (entre 1 y 300).</p>
+            <p class="text-gray-500 mt-2">El número de cartón sorteado (entre 1 y 230).</p>
         </div>
 
         <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
-            <h2 class="section-title">Número Ganador dentro del Cartón</h2>
+            <h2 class="section-title">Número Sorteado dentro del Cartón</h2>
             <div id="winningNumberInCarton" class="number-display">--</div>
-            <p class="text-gray-500 mt-2">El número específico dentro del cartón ganador (del 1 al 10).</p>
+            <p class="text-gray-500 mt-2">El número específico dentro del cartón sorteado (del 1 al 10).</p>
         </div>
 
         <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
-            <h2 class="section-title">Boleto Ganador</h2>
+            <h2 class="section-title">Boleto Resultado</h2>
             <div id="globalWinningTicket" class="number-display">--</div>
-            <p class="text-gray-500 mt-2" id="globalTicketInfo">Este es el identificador único del boleto ganador.</p>
+            <p class="text-gray-500 mt-2" id="globalTicketInfo">Este es el identificador único del boleto resultante.</p>
         </div>
 
         <!-- Mensaje de confirmación -->
@@ -175,8 +212,26 @@
             <strong class="font-bold">¡Sorteo realizado!</strong>
             <span class="block sm:inline" id="messageText"></span>
             <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" onclick="document.getElementById('messageBox').classList.add('hidden');">
-                <svg class="fill-current h-6 w-6 text-blue-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Cerrar</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                <svg class="fill-current h-6 w-6 text-blue-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Cerrar</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0
+ 0 1 0 1.698z"/></svg>
             </span>
+        </div>
+
+        <!-- Sección de Tabla de Resultados -->
+        <div id="resultsTableSection" class="results-table-section">
+            <h3>Historial de Ganadores</h3>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Premio</th>
+                        <th>Cartón Ganador</th>
+                        <th>Número Interno</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBody">
+                    <!-- Los resultados se insertarán aquí por JavaScript -->
+                </tbody>
+            </table>
         </div>
 
     </div>
@@ -184,16 +239,29 @@
     <script>
         // Obtener referencias a los elementos HTML
         const drawButton = document.getElementById('drawButton');
-        const clearButton = document.getElementById('clearButton'); // Nuevo botón de limpiar
+        const clearButton = document.getElementById('clearButton');
         const winningCartonDisplay = document.getElementById('winningCarton');
         const winningNumberInCartonDisplay = document.getElementById('winningNumberInCarton');
         const globalWinningTicketDisplay = document.getElementById('globalWinningTicket');
-        const globalTicketInfo = document.getElementById('globalTicketInfo'); // Referencia al párrafo de info
+        const globalTicketInfo = document.getElementById('globalTicketInfo');
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
+        const resultsTableBody = document.getElementById('resultsTableBody');
 
         // Estado inicial del párrafo de información del boleto ganador
-        const initialGlobalTicketInfoText = "Este es el identificador único del boleto ganador.";
+        const initialGlobalTicketInfoText = "Este es el identificador único del boleto resultante.";
+
+        // Definición de los premios en el orden inverso de sorteo
+        const prizes = [
+            { name: '4to Premio x $50.000' },
+            { name: '3er Premio x $50.000' },
+            { name: '2do Premio x $100.000' },
+            { name: '1er Premio x $200.000' }
+        ];
+
+        let currentDrawIndex = 0; // Índice para seguir qué premio se sortea
+        let recordedResults = []; // Array para almacenar los resultados de los sorteos ganadores
+        let alAguaDrawsRemaining = 0; // Contador de sorteos "al agua" restantes para el premio actual
 
         /**
          * Genera un número entero aleatorio entre un mínimo y un máximo (ambos inclusive).
@@ -202,8 +270,8 @@
          * @returns {number} Un número entero aleatorio.
          */
         function getRandomInt(min, max) {
-            min = Math.ceil(min); // Asegura que el mínimo sea un entero
-            max = Math.floor(max); // Asegura que el máximo sea un entero
+            min = Math.ceil(min);
+            max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
@@ -219,31 +287,53 @@
          */
         function animateDraw(displayElement, min, max, durationMs, finalValue, callback) {
             let startTime = Date.now();
-            // Start interval to update numbers rapidly
             let intervalId = setInterval(() => {
                 if (Date.now() - startTime < durationMs) {
                     displayElement.textContent = getRandomInt(min, max);
                 } else {
-                    // Animation complete, clear interval and set final value
                     clearInterval(intervalId);
                     displayElement.textContent = finalValue;
                     if (callback) {
-                        callback(); // Execute callback function
+                        callback();
                     }
                 }
-            }, 100); // Update every 100 milliseconds for a smooth "spinning" effect
+            }, 100);
         }
 
         /**
-         * Resets all the displayed results to their initial state.
+         * Renderiza los resultados almacenados en la tabla HTML.
+         * @returns {void}
+         */
+        function renderResultsTable() {
+            resultsTableBody.innerHTML = ''; // Limpiar la tabla antes de renderizar
+            recordedResults.forEach(result => {
+                const row = resultsTableBody.insertRow();
+                row.insertCell().textContent = result.prize;
+                row.insertCell().textContent = result.carton;
+                row.insertCell().textContent = result.internalNumber;
+                // La columna 'Boleto' ha sido eliminada del HTML, por lo que no se inserta aquí.
+            });
+        }
+
+        /**
+         * Resets all the displayed results and the history table.
          */
         function clearResults() {
             winningCartonDisplay.textContent = '--';
             winningNumberInCartonDisplay.textContent = '--';
             globalWinningTicketDisplay.textContent = '--';
-            globalTicketInfo.textContent = initialGlobalTicketInfoText; // Restablecer el texto de info
-            messageBox.classList.add('hidden'); // Ocultar el cuadro de mensaje
-            drawButton.disabled = false; // Asegurarse de que el botón de sorteo esté habilitado
+            globalTicketInfo.textContent = initialGlobalTicketInfoText;
+            messageBox.classList.add('hidden');
+
+            currentDrawIndex = 0; // Reiniciar el contador de sorteos
+            recordedResults = []; // Vaciar el array de resultados
+            renderResultsTable(); // Actualizar la tabla (la dejará vacía)
+
+            // Inicializar alAguaDrawsRemaining para el primer sorteo
+            alAguaDrawsRemaining = getRandomInt(2, 4);
+
+            drawButton.disabled = false; // Habilitar el botón de sorteo
+            drawButton.textContent = `Realizar Sorteo para el ${prizes[0].name}`; // Actualizar texto del botón
         }
 
         /**
@@ -252,55 +342,99 @@
          * @returns {void}
          */
         function performDraw() {
-            // Deshabilitar el botón de sorteo y de limpiar para evitar múltiples acciones simultáneas
+            if (currentDrawIndex >= prizes.length) {
+                // Todos los sorteos han sido realizados
+                messageText.textContent = ` ¡Todos los premios han sido sorteados! Presiona "Limpiar Resultados" para comenzar de nuevo.`;
+                messageBox.classList.remove('hidden');
+                drawButton.disabled = true;
+                clearButton.disabled = false;
+                return;
+            }
+
+            // Deshabilitar los botones durante el sorteo
             drawButton.disabled = true;
             clearButton.disabled = true;
 
-
-            // Resetear las visualizaciones y ocultar el mensaje de confirmación
+            // Resetear las visualizaciones actuales
             winningCartonDisplay.textContent = '--';
             winningNumberInCartonDisplay.textContent = '--';
             globalWinningTicketDisplay.textContent = '--';
-            globalTicketInfo.textContent = initialGlobalTicketInfoText; // Restablecer el texto de info antes de la animación
+            globalTicketInfo.textContent = initialGlobalTicketInfoText;
             messageBox.classList.add('hidden');
 
-            const finalWinningCarton = getRandomInt(1, 300);
+            const currentPrize = prizes[currentDrawIndex];
+            // Actualizado el rango para el cartón ganador a 1 y 230
+            const finalWinningCarton = getRandomInt(1, 230);
 
-            // 1. Iniciar la animación para el "Cartón Ganador"
-            animateDraw(winningCartonDisplay, 1, 300, 10000, finalWinningCarton, () => {
-                // Callback que se ejecuta una vez que la animación del cartón termina
-
+            // 1. Iniciar la animación para el "Cartón Sorteado"
+            // Actualizado el rango para la animación del cartón ganador a 1 y 230
+            animateDraw(winningCartonDisplay, 1, 230, 10000, finalWinningCarton, () => {
+                // Callback una vez que la animación del cartón termina
                 const finalWinningNumberInCarton = getRandomInt(1, 10);
 
-                // 2. Iniciar la animación para el "Número Ganador dentro del Cartón"
+                // 2. Iniciar la animación para el "Número Sorteado dentro del Cartón"
                 animateDraw(winningNumberInCartonDisplay, 1, 10, 10000, finalWinningNumberInCarton, () => {
-                    // Callback que se ejecuta una vez que la animación del número dentro del cartón termina
+                    // Callback una vez que la animación del número interno termina
 
-                    // Mostrar el boleto ganador en el formato "Cartón X - Número Y"
+                    // Mostrar el boleto resultado en el formato "Cartón X - Número Y"
                     globalWinningTicketDisplay.textContent = `${finalWinningCarton} - ${finalWinningNumberInCarton}`;
 
-                    // Actualizar el texto informativo debajo del boleto ganador
-                    document.getElementById('globalTicketInfo').textContent = `Este boleto corresponde al Cartón ${finalWinningCarton} - Número ${finalWinningNumberInCarton}.`;
+                    // Actualizar el texto informativo debajo del boleto resultado
+                    globalTicketInfo.textContent = `Este boleto corresponde al Cartón ${finalWinningCarton} - Número ${finalWinningNumberInCarton}.`;
 
-                    // Mostrar mensaje de confirmación con los detalles del cartón y número interno
-                    messageText.textContent = ` El cartón sorteado es el ${finalWinningCarton}, con el número interno ${finalWinningNumberInCarton}.`;
-                    messageBox.classList.remove('hidden'); // Mostrar el cuadro de mensaje
+                    // Lógica de "Al Agua"
+                    if (alAguaDrawsRemaining > 0) {
+                        alAguaDrawsRemaining--; // Decrementar contador "al agua"
+                        messageText.textContent = ` Lamentablemente te fuiste Al Agua, mejor suerte para la próxima. Quedan ${alAguaDrawsRemaining} sorteos "al agua" para el ${currentPrize.name}.`;
+                        messageBox.classList.remove('hidden');
+                        
+                        // Habilitar el botón para volver a sortear para el MISMO premio
+                        drawButton.disabled = false;
+                        clearButton.disabled = false;
 
-                    // Habilitar los botones una vez que todas las animaciones han terminado
-                    drawButton.disabled = false;
-                    clearButton.disabled = false;
+                    } else {
+                        // Este es el sorteo GANADOR para el premio actual
+                        // El cálculo de globalWinningTicketNumerical se mantiene para el mensaje de confirmación,
+                        // pero no se almacena en la tabla.
+                        const globalWinningTicketNumerical = (finalWinningCarton - 1) * 10 + finalWinningNumberInCarton;
+
+                        // Registrar el resultado del sorteo GANADOR (sin globalTicket)
+                        recordedResults.push({
+                            prize: currentPrize.name,
+                            carton: finalWinningCarton,
+                            internalNumber: finalWinningNumberInCarton,
+                        });
+                        renderResultsTable(); // Actualizar la tabla con el nuevo resultado
+
+                        // Mostrar mensaje de confirmación de ganador
+                        messageText.textContent = ` ¡${currentPrize.name} ha sido sorteado! El cartón ganador es el ${finalWinningCarton}, con el número interno ${finalWinningNumberInCarton}.`;
+                        messageBox.classList.remove('hidden');
+
+                        currentDrawIndex++; // Pasar al siguiente premio
+                        if (currentDrawIndex < prizes.length) {
+                            // Si hay más premios, inicializar el contador "al agua" para el siguiente premio
+                            alAguaDrawsRemaining = getRandomInt(2, 4);
+                            drawButton.textContent = `Realizar Sorteo para el ${prizes[currentDrawIndex].name}`;
+                            drawButton.disabled = false; // Habilitar para el siguiente sorteo
+                        } else {
+                            // Todos los premios han sido sorteados
+                            drawButton.textContent = 'Todos los Sorteos Completados';
+                            drawButton.disabled = true;
+                        }
+                        clearButton.disabled = false; // Habilitar el botón de limpiar
+                    }
                 });
             });
         }
 
-        // Asignar el evento click al botón de sorteo
+        // Asignar los eventos a los botones
         drawButton.addEventListener('click', performDraw);
-
-        // Asignar el evento click al botón de limpiar resultados
         clearButton.addEventListener('click', clearResults);
 
-        // Ya no se llama performDraw en window.onload,
-        // los resultados se mostrarán como "--" por defecto hasta que se presione el botón.
+        // Configuración inicial al cargar la página
+        window.onload = () => {
+            clearResults(); // Asegura que la tabla y displays estén limpios y el botón con el texto correcto
+        };
     </script>
 </body>
 </html>
