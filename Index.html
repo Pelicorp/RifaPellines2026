@@ -180,12 +180,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-3xl font-extrabold text-gray-900 mb-6">Gran Rifa Solidaria, Séptimos básicos viaje a Pellines 2026</h1>
-
-        <p class="info-text">
-            Haz clic en el botón para generar aleatoriamente el cartón ganador y un número dentro de ese cartón.
-            ¡Mucha suerte!
-        </p>
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-6">Gran Rifa del Segundo Semestre</h1>
 
         <!-- Sección de Motivo de la Rifa -->
         <div class="card-info-section">
@@ -236,6 +231,10 @@
         </div>
 
         <!-- Controles y resultados del sorteo -->
+        <p class="info-text">
+            Haz clic en el botón para generar aleatoriamente el cartón ganador y un número dentro de ese cartón.
+            ¡Mucha suerte!
+        </p>
         <div class="button-group">
             <button id="drawButton" class="draw-button">
                 Realizar Sorteo
@@ -330,64 +329,35 @@
         }
 
         /**
-         * Simulates a casino slot machine animation for the numbers.
-         * @param {HTMLElement} displayElement - The HTML element to animate.
-         * @param {number} finalValue - The final number to display.
-         * @param {function} callback - Function to call after animation.
+         * Animates the display of numbers for a given element, then displays the final value.
+         * @param {HTMLElement} displayElement - The HTML element to update with animated numbers.
+         * @param {number} min - Minimum random number for animation.
+         * @param {number} max - Maximum random number for animation.
+         * @param {number} durationMs - Duration of the animation in milliseconds.
+         * @param {*} finalValue - The actual winning value to display at the end. Can be a string or number.
+         * @param {Function} callback - Function to call after the animation completes.
+         * @returns {void}
          */
-        function animateSlot(displayElement, finalValue, callback) {
-            const durationMs = 3000;
-            const finalValueString = String(finalValue);
-            const digitLength = finalValueString.length;
-
-            displayElement.innerHTML = ''; // Clear previous content
-
-            const reels = [];
-            for (let i = 0; i < digitLength; i++) {
-                const reel = document.createElement('div');
-                reel.classList.add('slot-reel');
-                
-                const digitsContainer = document.createElement('div');
-                digitsContainer.classList.add('slot-digits');
-                
-                // Add a loop of numbers for the animation
-                for (let j = 0; j < 20; j++) {
-                    const digit = document.createElement('div');
-                    digit.classList.add('slot-digit');
-                    digit.textContent = getRandomInt(0, 9);
-                    digitsContainer.appendChild(digit);
+        function animateDraw(displayElement, min, max, durationMs, finalValue, callback) {
+            let startTime = Date.now();
+            let intervalId = setInterval(() => {
+                if (Date.now() - startTime < durationMs) {
+                    // For carton animation, ensure it doesn't show excluded numbers during animation
+                    let animatedValue = getRandomInt(min, max);
+                    if (displayElement.id === 'winningCarton') {
+                        while (excludedCartons.includes(animatedValue)) {
+                            animatedValue = getRandomInt(min, max);
+                        }
+                    }
+                    displayElement.textContent = animatedValue;
+                } else {
+                    clearInterval(intervalId);
+                    displayElement.textContent = finalValue;
+                    if (callback) {
+                        callback();
+                    }
                 }
-                
-                // Add the final digit to stop on
-                const finalDigit = document.createElement('div');
-                finalDigit.classList.add('slot-digit');
-                finalDigit.textContent = finalValueString[i];
-                digitsContainer.appendChild(finalDigit);
-
-                reel.appendChild(digitsContainer);
-                displayElement.appendChild(reel);
-                reels.push(digitsContainer);
-            }
-
-            // Stop reels with a delay to create a cascade effect
-            reels.forEach((reel, index) => {
-                setTimeout(() => {
-                    const finalDigitHeight = reel.querySelector('.slot-digit').offsetHeight;
-                    const finalPosition = reel.children.length * finalDigitHeight - finalDigitHeight;
-                    reel.style.transform = `translateY(-${finalPosition}px)`;
-                    reel.style.transition = `transform 1s cubic-bezier(0.19, 1, 0.22, 1)`;
-                    reel.style.animationPlayState = 'paused';
-                }, durationMs + (index * 200));
-            });
-
-            // Set a timeout for the entire animation to finish before calling the callback
-            setTimeout(() => {
-                // Clear and display final value
-                displayElement.textContent = finalValueString;
-                if (callback) {
-                    callback();
-                }
-            }, durationMs + (digitLength * 200) + 1000);
+            }, 100);
         }
 
         function renderResultsTable() {
@@ -436,12 +406,10 @@
             const currentPrize = prizes[currentDrawIndex];
             const finalWinningCarton = getValidRandomCarton(1, 229, excludedCartons);
 
-            // Animate carton number
-            animateSlot(winningCartonDisplay, finalWinningCarton, () => {
+            animateDraw(winningCartonDisplay, 1, 229, 10000, finalWinningCarton, () => {
                 const finalWinningNumberInCarton = getRandomInt(1, 10);
-                
-                // Animate internal number
-                animateSlot(winningNumberInCartonDisplay, finalWinningNumberInCarton, () => {
+
+                animateDraw(winningNumberInCartonDisplay, 1, 10, 5000, finalWinningNumberInCarton, () => {
                     globalWinningTicketDisplay.textContent = `${finalWinningCarton} - ${finalWinningNumberInCarton}`;
                     globalTicketInfo.textContent = `Este boleto corresponde al Cartón ${finalWinningCarton} - Número ${finalWinningNumberInCarton}.`;
 
