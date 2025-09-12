@@ -10,7 +10,8 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* A light gray background */
+            background-color: #e0f2fe; /* Light blue background */
+            background-image: radial-gradient(at 0% 0%, rgba(147, 197, 253, 0.5) 0%, transparent 50%), radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.5) 0%, transparent 50%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,26 +20,26 @@
             box-sizing: border-box;
         }
         .container {
-            max-width: 700px; /* Slightly wider for new content */
+            max-width: 700px;
             width: 100%;
             background-color: #ffffff;
-            border-radius: 1.5rem; /* More rounded borders */
+            border-radius: 1.5rem;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             padding: 30px;
             text-align: center;
         }
         .draw-button, .clear-button {
-            background-image: linear-gradient(to right, #6EE7B7 0%, #34D399 51%, #10B981 100%);
-            margin: 10px; /* Adjusted for two buttons */
+            background-image: linear-gradient(to right, #60A5FA 0%, #3B82F6 51%, #2563EB 100%);
+            margin: 10px;
             padding: 15px 45px;
             text-align: center;
             text-transform: uppercase;
             transition: 0.5s;
             background-size: 200% auto;
             color: white;
-            box-shadow: 0 0 20px #eee;
+            box-shadow: 0 0 20px #93c5fd;
             border-radius: 10px;
-            display: inline-block; /* Changed to inline-block for side-by-side display */
+            display: inline-block;
             width: fit-content;
             cursor: pointer;
             border: none;
@@ -57,13 +58,47 @@
         .number-display {
             font-size: 3rem;
             font-weight: 700;
-            color: #10B981;
+            color: #1e40af; /* Darker blue */
             margin-top: 10px;
             padding: 15px;
-            background-color: #ecfdf5;
+            background-color: #dbeafe; /* Lighter blue */
             border-radius: 0.75rem;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            height: 4rem;
         }
+        /* Slot machine specific CSS */
+        .slot-reel {
+            display: inline-block;
+            height: 1em; /* Adjust to font-size */
+            overflow: hidden;
+            position: relative;
+            vertical-align: top;
+            
+        }
+        .slot-digits {
+            position: relative;
+            animation: slot-spin-keyframes 1000ms linear infinite;
+        }
+        .slot-digit {
+            height: 1em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        @keyframes slot-spin-keyframes {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100%); }
+        }
+        .stop-reel {
+            animation-play-state: paused;
+            transition: transform 1s ease-out;
+        }
+        
         .section-title {
             font-size: 1.5rem;
             font-weight: 600;
@@ -76,12 +111,12 @@
             margin-bottom: 20px;
         }
         .card-info-section {
-            background-color: #f8fafc; /* A lighter gray for info sections */
+            background-color: #eff6ff; /* A lighter blue for info sections */
             border-radius: 1rem;
             padding: 25px;
             margin-top: 25px;
             text-align: left;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #bfdbfe;
         }
         .card-info-section h3 {
             font-size: 1.25rem;
@@ -106,10 +141,10 @@
         }
         .results-table-section {
             margin-top: 40px;
-            background-color: #f8fafc;
+            background-color: #eff6ff;
             border-radius: 1rem;
             padding: 25px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #bfdbfe;
         }
         .results-table-section h3 {
             font-size: 1.25rem;
@@ -124,22 +159,22 @@
             margin-top: 15px;
         }
         .results-table th, .results-table td {
-            border: 1px solid #e2e8f0;
+            border: 1px solid #bfdbfe;
             padding: 12px 15px;
             text-align: center;
             font-size: 0.9rem;
         }
         .results-table th {
-            background-color: #e2e8f0;
+            background-color: #bfdbfe;
             font-weight: 600;
             color: #374151;
             text-transform: uppercase;
         }
         .results-table tbody tr:nth-child(odd) {
-            background-color: #fcfdfe;
+            background-color: #e0f2fe;
         }
         .results-table tbody tr:hover {
-            background-color: #f0f4f8;
+            background-color: #c5e1ff;
         }
     </style>
 </head>
@@ -152,19 +187,20 @@
             ¡Mucha suerte!
         </p>
 
-        <!-- Sección de Motivo de la Rifa (Actualizada) -->
+        <!-- Sección de Motivo de la Rifa -->
         <div class="card-info-section">
             <h3>Motivo de la Rifa</h3>
             <p>
-                Esta es una <strong>GRAN RIFA SOLIDARIA</strong> con un valor de $1.000 por número, organizada
-                en beneficio de los Séptimos Básicos 2025 del Colegio St. Thomas Morus, para juntar fondos para su viaje a Pellines en 2026.
+                Esta es una <strong>GRAN RIFA SOLIDARIA</strong> con un valor de $1.000 por cartón, organizada
+                en beneficio de los Séptimos Básicos 2025 del Colegio St. Thomas Morus,
+                para juntar fondos para su viaje a Pellines en 2026.
             </p>
             <p class="mt-4">
                 ¡Gracias por tu apoyo y por ser parte de este noble objetivo!
             </p>
         </div>
 
-        <!-- Sección de Premios Sorteados (Actualizada) -->
+        <!-- Sección de Premios Sorteados -->
         <div class="card-info-section">
             <h3>Premios Sorteados</h3>
             <ul class="mt-4">
@@ -184,8 +220,14 @@
                 Para garantizar la transparencia y equidad del sorteo, se aplican las siguientes condiciones:
             </p>
             <ul class="mt-4">
-                <li><strong>Cartones Válidos:</strong> Los cartones sorteados estarán en el rango de 1 a 225.</li>
-                <li><strong>Cartones Excluidos:</strong> Los cartones <strong>127, 128, 202, 203</strong> y <strong>206</strong> no fueron vendidos y, por lo tanto, no pueden ser ganadores. Si alguno de estos números es sorteado, el sistema automáticamente realizará un nuevo sorteo interno hasta obtener un cartón válido.</li>
+                <li><strong>Cartones Válidos:</strong> Los cartones sorteados estarán en el rango de 1 a 229.</li>
+                <li><strong>Cartones Excluidos:</strong> Los siguientes números no fueron vendidos y, por lo tanto, no pueden ser ganadores:
+                    <ul class="list-none ml-0 mt-2">
+                        <li>19, 20, 21, 31, 32, 33, 34, 35, 36, 46, 47, 48, 57, 58, 59, 60, 61, 62, 70, 71, 72</li>
+                        <li>175, 176, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 218, 223, 224.</li>
+                    </ul>
+                    Si alguno de estos números es sorteado, el sistema automáticamente realizará un nuevo sorteo interno hasta obtener un cartón válido.
+                </li>
                 <li><strong>Determinación del Ganador:</strong> Cada sorteo realizado corresponderá directamente al premio en curso, sin sorteos intermedios "al agua".</li>
             </ul>
             <p class="mt-4">
@@ -207,7 +249,7 @@
         <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
             <h2 class="section-title">Cartón Sorteado</h2>
             <div id="winningCarton" class="number-display">--</div>
-            <p class="text-gray-500 mt-2">El número de cartón sorteado (entre 1 y 225, excluyendo 127, 128, 202, 203 y 206).</p>
+            <p class="text-gray-500 mt-2">El número de cartón sorteado (entre 1 y 229, excluyendo los no vendidos).</p>
         </div>
 
         <div class="mt-8 p-6 bg-gray-50 rounded-xl shadow-inner">
@@ -248,13 +290,9 @@
                 </tbody>
             </table>
         </div>
-        
-        <!-- Eliminada la sección de "Historial de Sorteos 'Al Agua'" -->
-
     </div>
 
     <script>
-        // Get references to HTML elements
         const drawButton = document.getElementById('drawButton');
         const clearButton = document.getElementById('clearButton');
         const winningCartonDisplay = document.getElementById('winningCarton');
@@ -263,15 +301,10 @@
         const globalTicketInfo = document.getElementById('globalTicketInfo');
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
-        const resultsTableBody = document.getElementById('resultsTableBody'); // Table for winners
+        const resultsTableBody = document.getElementById('resultsTableBody');
 
-        // Initial state of the global ticket info paragraph
         const initialGlobalTicketInfoText = "Este es el identificador único del boleto resultante.";
-
-        // Define excluded carton numbers (updated list)
-        const excludedCartons = [127, 128, 202, 203, 206];
-
-        // Definition of prizes in reverse draw order
+        const excludedCartons = [19, 20, 21, 31, 32, 33, 34, 35, 36, 46, 47, 48, 57, 58, 59, 60, 61, 62, 70, 71, 72, 175, 176, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 218, 223, 224];
         const prizes = [
             { name: '4to Premio x $50.000' },
             { name: '3er Premio x $50.000' },
@@ -279,28 +312,15 @@
             { name: '1er Premio x $200.000' }
         ];
 
-        let currentDrawIndex = 0; // Index to track which prize is being drawn
-        let recordedResults = []; // Array to store winning draw results
+        let currentDrawIndex = 0;
+        let recordedResults = [];
 
-        /**
-         * Generates a random integer between a minimum and maximum (inclusive).
-         * @param {number} min - The minimum allowed value.
-         * @param {number} max - The maximum allowed value.
-         * @returns {number} A random integer.
-         */
         function getRandomInt(min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
-        /**
-         * Generates a random carton number, excluding specific numbers.
-         * @param {number} min - The minimum allowed carton number.
-         * @param {number} max - The maximum allowed carton number.
-         * @param {Array<number>} excluded - An array of carton numbers to exclude.
-         * @returns {number} A valid random carton number.
-         */
         function getValidRandomCarton(min, max, excluded) {
             let carton;
             do {
@@ -310,43 +330,68 @@
         }
 
         /**
-         * Animates the display of numbers for a given element, then displays the final value.
-         * @param {HTMLElement} displayElement - The HTML element to update with animated numbers.
-         * @param {number} min - Minimum random number for animation.
-         * @param {number} max - Maximum random number for animation.
-         * @param {number} durationMs - Duration of the animation in milliseconds.
-         * @param {*} finalValue - The actual winning value to display at the end. Can be a string or number.
-         * @param {Function} callback - Function to call after the animation completes.
-         * @returns {void}
+         * Simulates a casino slot machine animation for the numbers.
+         * @param {HTMLElement} displayElement - The HTML element to animate.
+         * @param {number} finalValue - The final number to display.
+         * @param {function} callback - Function to call after animation.
          */
-        function animateDraw(displayElement, min, max, durationMs, finalValue, callback) {
-            let startTime = Date.now();
-            let intervalId = setInterval(() => {
-                if (Date.now() - startTime < durationMs) {
-                    // For carton animation, ensure it doesn't show excluded numbers during animation
-                    let animatedValue = getRandomInt(min, max);
-                    if (displayElement.id === 'winningCarton') {
-                        while (excludedCartons.includes(animatedValue)) {
-                            animatedValue = getRandomInt(min, max);
-                        }
-                    }
-                    displayElement.textContent = animatedValue;
-                } else {
-                    clearInterval(intervalId);
-                    displayElement.textContent = finalValue;
-                    if (callback) {
-                        callback();
-                    }
+        function animateSlot(displayElement, finalValue, callback) {
+            const durationMs = 3000;
+            const finalValueString = String(finalValue);
+            const digitLength = finalValueString.length;
+
+            displayElement.innerHTML = ''; // Clear previous content
+
+            const reels = [];
+            for (let i = 0; i < digitLength; i++) {
+                const reel = document.createElement('div');
+                reel.classList.add('slot-reel');
+                
+                const digitsContainer = document.createElement('div');
+                digitsContainer.classList.add('slot-digits');
+                
+                // Add a loop of numbers for the animation
+                for (let j = 0; j < 20; j++) {
+                    const digit = document.createElement('div');
+                    digit.classList.add('slot-digit');
+                    digit.textContent = getRandomInt(0, 9);
+                    digitsContainer.appendChild(digit);
                 }
-            }, 100);
+                
+                // Add the final digit to stop on
+                const finalDigit = document.createElement('div');
+                finalDigit.classList.add('slot-digit');
+                finalDigit.textContent = finalValueString[i];
+                digitsContainer.appendChild(finalDigit);
+
+                reel.appendChild(digitsContainer);
+                displayElement.appendChild(reel);
+                reels.push(digitsContainer);
+            }
+
+            // Stop reels with a delay to create a cascade effect
+            reels.forEach((reel, index) => {
+                setTimeout(() => {
+                    const finalDigitHeight = reel.querySelector('.slot-digit').offsetHeight;
+                    const finalPosition = reel.children.length * finalDigitHeight - finalDigitHeight;
+                    reel.style.transform = `translateY(-${finalPosition}px)`;
+                    reel.style.transition = `transform 1s cubic-bezier(0.19, 1, 0.22, 1)`;
+                    reel.style.animationPlayState = 'paused';
+                }, durationMs + (index * 200));
+            });
+
+            // Set a timeout for the entire animation to finish before calling the callback
+            setTimeout(() => {
+                // Clear and display final value
+                displayElement.textContent = finalValueString;
+                if (callback) {
+                    callback();
+                }
+            }, durationMs + (digitLength * 200) + 1000);
         }
 
-        /**
-         * Renders the stored winning results in the HTML table.
-         * @returns {void}
-         */
         function renderResultsTable() {
-            resultsTableBody.innerHTML = ''; // Clear the table before rendering
+            resultsTableBody.innerHTML = '';
             recordedResults.forEach(result => {
                 const row = resultsTableBody.insertRow();
                 row.insertCell().textContent = result.prize;
@@ -355,9 +400,6 @@
             });
         }
 
-        /**
-         * Resets all the displayed results, the history tables, and draw state.
-         */
         function clearResults() {
             winningCartonDisplay.textContent = '--';
             winningNumberInCartonDisplay.textContent = '--';
@@ -365,22 +407,16 @@
             globalTicketInfo.textContent = initialGlobalTicketInfoText;
             messageBox.classList.add('hidden');
 
-            currentDrawIndex = 0; // Reset draw counter
-            recordedResults = []; // Clear winning results array
-            renderResultsTable(); // Update winners table (will be empty)
+            currentDrawIndex = 0;
+            recordedResults = [];
+            renderResultsTable();
 
-            drawButton.disabled = false; // Enable draw button
-            drawButton.textContent = `Realizar Sorteo para el ${prizes[0].name}`; // Update button text for the first prize
+            drawButton.disabled = false;
+            drawButton.textContent = `Realizar Sorteo para el ${prizes[0].name}`;
         }
 
-        /**
-         * Performs the carton and internal number draw with animation.
-         * Disables the button during the draw.
-         * @returns {void}
-         */
         function performDraw() {
             if (currentDrawIndex >= prizes.length) {
-                // All prizes have been drawn
                 messageText.textContent = ` ¡Todos los premios han sido sorteados! Presiona "Limpiar Resultados" para comenzar de nuevo.`;
                 messageBox.classList.remove('hidden');
                 drawButton.disabled = true;
@@ -388,11 +424,9 @@
                 return;
             }
 
-            // Disable buttons during the draw
             drawButton.disabled = true;
             clearButton.disabled = true;
 
-            // Reset current displays
             winningCartonDisplay.textContent = '--';
             winningNumberInCartonDisplay.textContent = '--';
             globalWinningTicketDisplay.textContent = '--';
@@ -400,57 +434,45 @@
             messageBox.classList.add('hidden');
 
             const currentPrize = prizes[currentDrawIndex];
-            // Get a valid random carton, excluding specified numbers
-            const finalWinningCarton = getValidRandomCarton(1, 225, excludedCartons);
+            const finalWinningCarton = getValidRandomCarton(1, 229, excludedCartons);
 
-            // 1. Start animation for "Cartón Sorteado"
-            animateDraw(winningCartonDisplay, 1, 225, 10000, finalWinningCarton, () => {
-                // Callback once carton animation ends
+            // Animate carton number
+            animateSlot(winningCartonDisplay, finalWinningCarton, () => {
                 const finalWinningNumberInCarton = getRandomInt(1, 10);
-
-                // 2. Start animation for "Número Sorteado dentro del Cartón"
-                animateDraw(winningNumberInCartonDisplay, 1, 10, 10000, finalWinningNumberInCarton, () => {
-                    // Callback once internal number animation ends
-
-                    // Display the result ticket in "Cartón X - Número Y" format
+                
+                // Animate internal number
+                animateSlot(winningNumberInCartonDisplay, finalWinningNumberInCarton, () => {
                     globalWinningTicketDisplay.textContent = `${finalWinningCarton} - ${finalWinningNumberInCarton}`;
-
-                    // Update the informational text below the result ticket
                     globalTicketInfo.textContent = `Este boleto corresponde al Cartón ${finalWinningCarton} - Número ${finalWinningNumberInCarton}.`;
 
-                    // This is the WINNING draw for the current prize (no "al agua" logic)
                     recordedResults.push({
                         prize: currentPrize.name,
                         carton: finalWinningCarton,
                         internalNumber: finalWinningNumberInCarton,
                     });
-                    renderResultsTable(); // Update winners table with the new result
+                    renderResultsTable();
 
-                    // Display winner confirmation message
                     messageText.textContent = ` ¡${currentPrize.name} ha sido sorteado! El cartón ganador es el ${finalWinningCarton}, con el número interno ${finalWinningNumberInCarton}.`;
                     messageBox.classList.remove('hidden');
 
-                    currentDrawIndex++; // Move to the next prize
+                    currentDrawIndex++;
                     if (currentDrawIndex < prizes.length) {
                         drawButton.textContent = `Realizar Sorteo para el ${prizes[currentDrawIndex].name}`;
-                        drawButton.disabled = false; // Enable for the next draw
+                        drawButton.disabled = false;
                     } else {
-                        // All prizes have been drawn
                         drawButton.textContent = 'Todos los Sorteos Completados';
                         drawButton.disabled = true;
                     }
-                    clearButton.disabled = false; // Enable clear button
+                    clearButton.disabled = false;
                 });
             });
         }
 
-        // Assign events to buttons
         drawButton.addEventListener('click', performDraw);
         clearButton.addEventListener('click', clearResults);
 
-        // Initial setup when page loads
         window.onload = () => {
-            clearResults(); // Ensures tables and displays are clear and button text is correct
+            clearResults();
         };
     </script>
 </body>
